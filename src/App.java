@@ -1,37 +1,46 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import javafx.application.Application;
+import javafx.scene.control.Button;
 import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.canvas.*;
-import javafx.animation.AnimationTimer;
+import javax.sound.sampled.LineUnavailableException;
 
 public class App extends Application {
-    public void start(Stage theStage) {
-        theStage.setTitle("Render");
+    Group root = new Group();
+    SoundLoop microphone;
+
+    public void start(Stage theStage) throws LineUnavailableException {
+        theStage.setTitle("Vocoder");
         ArrayList<String> input = new ArrayList<>(); //store the keyboard input
         final long width = 512; //width of the window
         final long height = 512; //height of the window
-
-        Group root = new Group();
-        final long startNanoTime = System.nanoTime();
+        microphone = new SoundLoop();
+        microphone.run();
 
         Canvas canvas = new Canvas(width, height);
         root.getChildren().add(canvas);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        try {
-            SoundLoop microphone = new SoundLoop();
-
-            new AnimationTimer() {
-                public void handle(long currentNanoTime) {
-                    double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-                }
-            }.start();
-            theStage.show();
-        } catch (Exception e) {
-            System.out.println("unable to read the microphone input");
-        }
-
+        DefineButton();
+        Scene scene = new Scene(root,width,height);
+        theStage.setScene(scene);
+        theStage.show();
     }
+    private void DefineButton() {
+        Button play = new Button("play Raw");
+        play.setOnAction(e->{
+            if (microphone.active) {
+                microphone.stop();
+            }
+            else microphone.play();
+        });
+        play.setTranslateX(100);
+        play.setTranslateY(100);
+        play.setVisible(true);
+        play.setVisible(true);
+        root.getChildren().add(play);
+    }
+    //Todo work on the close option
+    //speaker.close();
+    //microphone.close();
 }
 

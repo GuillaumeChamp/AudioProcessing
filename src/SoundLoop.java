@@ -1,13 +1,12 @@
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class SoundLoop implements Runnable {
     AudioFormat format = new AudioFormat( 8000.0f,16, 1,true, true);
     //Format propre au micro du PC
     TargetDataLine microphone;
     SourceDataLine speaker;
-    long uptime = 1000000;
+    boolean active = false;
 
     public SoundLoop() throws LineUnavailableException {
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
@@ -16,22 +15,25 @@ public class SoundLoop implements Runnable {
         speaker = (SourceDataLine) AudioSystem.getLine(speakerInfo);
     }
 
-
-    private void play(){
+    public void stop(){
+        //TODO : build a stop option
+        active=false;
+    }
+    public void play(){
+        //TODO add pre-factor to be able to use the play methode with different arguments to set effect
         int numBytes = 0;
         ByteArrayOutputStream outputData = new ByteArrayOutputStream(); //long list of unlimited data
         int sampleRate = 1024;
         byte[] rawData = new byte[microphone.getBufferSize()/5];
 
-        while (numBytes < uptime){
+        while (numBytes<100000){
             int numberOfByteRead = microphone.read(rawData,0,sampleRate);
             numBytes += numberOfByteRead;
             outputData.write(rawData,0,numberOfByteRead);
             speaker.write(rawData,0,numberOfByteRead);
         }
+        active=false;
         speaker.drain(); //clear data remain in the speaker buffer
-        speaker.close();
-        microphone.close();
     }
 
     @Override
@@ -42,8 +44,6 @@ public class SoundLoop implements Runnable {
             speaker.open(format);
             speaker.start();
 
-            this.play();
-
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Unable to read");
@@ -51,7 +51,10 @@ public class SoundLoop implements Runnable {
     }
 
     public static void main(String[] args) throws LineUnavailableException {
-            new SoundLoop().run();
+            SoundLoop sound = new SoundLoop();
+            sound.run();
+            sound.play();
+
         }
     }
 
