@@ -1,5 +1,4 @@
 package audio;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
@@ -27,7 +26,6 @@ public class AudioProcessor implements Runnable {
     @Override
     public void run() {
         isThreadRunning = true;
-        System.out.println("run");
         while (isThreadRunning){
             inputSignal.recordFrom(audioInput);
             outputSignal.setFrom(inputSignal);
@@ -38,13 +36,19 @@ public class AudioProcessor implements Runnable {
         isThreadRunning =false;
     }
 
+    public void resume(){
+        isThreadRunning=true;
+    }
+
     public static void main(String[] args){
         TargetDataLine inLine = AudioIO.obtainAudioInput("Réseau de microphones (Technolo",44000);
         SourceDataLine outLine = AudioIO.obtainAudioOutput("Périphérique audio principal",44000);
         AudioProcessor as = new AudioProcessor(inLine,outLine,1024);
         try {
+            assert inLine != null;
             inLine.open();
             inLine.start();
+            assert outLine != null;
             outLine.open();
             outLine.start();
             new Thread(as).start();

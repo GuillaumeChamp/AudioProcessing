@@ -9,7 +9,7 @@ public class SignalView extends LineChart<Number,Number> {
     public SignalView(Axis<Number> axis, Axis<Number> axis1) {
         super(axis, axis1);
     }
-
+    // Fixme : make it better
     public void updateData(AudioSignal signal){
         this.getData().removeAll(this.getData());
         XYChart.Series series = new XYChart.Series();
