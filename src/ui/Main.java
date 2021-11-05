@@ -16,6 +16,7 @@ import java.util.Arrays;
 
 public class Main extends Application {
     SignalView signalView = new SignalView(new NumberAxis(),new NumberAxis());
+    VuMeter vuMeter = new VuMeter();
     AudioIO io = new AudioIO();
     Boolean running = false;
     String InputMixer,OutputMixer;
@@ -31,7 +32,7 @@ public class Main extends Application {
             primaryStage.setTitle("The JavaFX audio processor");
             new AnimationTimer() {
                 public void handle(long currentNanoTime) {
-                    Draw();
+                    UpdateView();
                 }
             }.start();
             primaryStage.show();
@@ -60,17 +61,22 @@ public class Main extends Application {
         }
 
         private Node createStatusbar(){
-        HBox statusbar = new HBox();
-        statusbar.getChildren().addAll(new Label("Name:"), new TextField(" "));
-        return statusbar;
+            HBox statusbar = new HBox();
+            statusbar.getChildren().addAll(new Label("Name:"), new TextField(" "));
+            return statusbar;
         }
         private Node createMainContent(){
-        Group g = new Group();
-        g.getChildren().add(signalView);
-        return g;
+            Group g = new Group();
+            g.getChildren().add(vuMeter);
+            signalView.setTranslateX(200);
+            g.getChildren().add(signalView);
+            return g;
         }
-        private void Draw(){
-            if (running) signalView.updateData(io.getData());
+        private void UpdateView(){
+            if (running) {
+                signalView.updateData(io.getData());
+                vuMeter.update(io.getdB());
+            }
         }
         private void active(){
             running = io.swap();

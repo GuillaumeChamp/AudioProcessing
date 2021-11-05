@@ -12,9 +12,10 @@ public class AudioSignal {
     }
 
     public void setFrom(AudioSignal other){
-        this.sampleBuffer = other.getSampleBuffer();
+        this.sampleBuffer = other.sampleBuffer;
+        this.dBlevel= other.dBlevel;
     }
-    public double getdBlevel(){
+    public double getDBLevel(){
         return dBlevel;
     }
 
@@ -45,6 +46,6 @@ public class AudioSignal {
     }
     private void updatedB(){
         dBlevel = 0;
-        for (double l : sampleBuffer) dBlevel = l/sampleBuffer.length;
+        for (double l : sampleBuffer) dBlevel =+ Math.abs(l/sampleBuffer.length);
     }
 }

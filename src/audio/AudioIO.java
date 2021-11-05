@@ -71,6 +71,10 @@ public class AudioIO {
         return audioProcessor.getOutputSignal();
     }
 
+    public double getdB(){
+        return audioProcessor.getOutputSignal().getDBLevel();
+    }
+
     public boolean swap(){
         if (audioProcessor.isThreadRunning()) audioProcessor.terminateAudioThread();
         else audioProcessor.run();
