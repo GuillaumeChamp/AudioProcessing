@@ -4,7 +4,7 @@ import javax.sound.sampled.*;
 import java.util.Arrays;
 
 public class AudioIO {
-    AudioProcessor audioProcessor=null;
+    AudioProcessor audioProcessor;
     public static void printAudioMixers(){
         System.out.println("Mixers:");
         Arrays.stream(AudioSystem.getMixerInfo())
@@ -26,7 +26,8 @@ public class AudioIO {
         System.out.println(mixerName);
         if (mixer!=null)
             for (Line.Info s: mixer.getTargetLineInfo()) {
-                System.out.println(s.toString());
+                System.out.println(s);
+                //format are hide in mixer.targetLineInfo[0].formats
         }
         try {
             return (TargetDataLine) mixer.getLine(info);
@@ -75,15 +76,21 @@ public class AudioIO {
         return audioProcessor.isThreadRunning();
     }
 
-    public void startAudioProcessing(String inputMixer, String outputMixer, int sampleRate, int frameSize) throws LineUnavailableException {
+    public void startAudioProcessing(String inputMixer, String outputMixer, int sampleRate, int frameSize){
         TargetDataLine targetDataLine = obtainAudioInput(inputMixer,sampleRate);
         SourceDataLine sourceDataLine = obtainAudioOutput(outputMixer,sampleRate);
         audioProcessor= new AudioProcessor(targetDataLine,sourceDataLine,frameSize);
-        sourceDataLine.open();
-        sourceDataLine.start();
-        targetDataLine.open();
-        sourceDataLine.start();
-        new Thread(audioProcessor).start();
+        try {
+            assert sourceDataLine != null;
+            sourceDataLine.open();
+            sourceDataLine.start();
+            assert targetDataLine != null;
+            targetDataLine.open();
+            targetDataLine.start();
+            new Thread(audioProcessor).start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void stopAudioProcessing(){
@@ -91,7 +98,7 @@ public class AudioIO {
     }
 
 
-    public static void  main(String[] args) throws LineUnavailableException {
+    public static void  main(String[] args){
         printAudioMixers();
         AudioIO io = new AudioIO();
         io.startAudioProcessing("Réseau de microphones (Technolo","Périphérique audio principal",44000,1024);
