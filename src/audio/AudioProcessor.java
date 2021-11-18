@@ -1,4 +1,5 @@
 package audio;
+import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
@@ -6,7 +7,7 @@ public class AudioProcessor implements Runnable {
     private final AudioSignal inputSignal, outputSignal;
     private final TargetDataLine audioInput;
     private final SourceDataLine audioOutput;
-    private boolean isThreadRunning;
+    public boolean isThreadRunning;
 
     public AudioProcessor(TargetDataLine audioInput, SourceDataLine audioOutput, int frameSize) {
         this.audioInput = audioInput;
@@ -15,17 +16,18 @@ public class AudioProcessor implements Runnable {
         outputSignal = new AudioSignal(frameSize);
     }
 
-    public boolean isThreadRunning() {
-        return isThreadRunning;
-    }
-
-    public AudioSignal getOutputSignal() {
-        return outputSignal;
-    }
-
     @Override
     public void run() {
         isThreadRunning = true;
+        try {
+            audioInput.open();
+            audioInput.start();
+            audioOutput.open();
+            audioOutput.start();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+            System.out.println("unable to re-open or re-start");
+        }
         while (isThreadRunning){
             inputSignal.recordFrom(audioInput);
             outputSignal.setFrom(inputSignal);
@@ -34,10 +36,14 @@ public class AudioProcessor implements Runnable {
     }
     public void terminateAudioThread(){
         isThreadRunning =false;
+        audioOutput.stop();
+        audioOutput.close();
+        audioOutput.stop();
+        audioInput.close();
     }
 
-    public void resume(){
-        isThreadRunning=true;
+    public AudioSignal getInputSignal() {
+        return inputSignal;
     }
 
     public static void main(String[] args){

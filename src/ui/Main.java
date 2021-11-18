@@ -1,6 +1,7 @@
 package ui;
 
 import audio.AudioIO;
+import audio.AudioProcessor;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -17,8 +18,8 @@ import java.util.Arrays;
 public class Main extends Application {
     SignalView signalView = new SignalView(new NumberAxis(),new NumberAxis());
     VuMeter vuMeter = new VuMeter();
-    AudioIO io = new AudioIO();
-    Boolean running = false;
+    AudioProcessor io;
+    boolean running= false;
     String InputMixer,OutputMixer;
 
         public void start(Stage primaryStage) {
@@ -43,8 +44,8 @@ public class Main extends Application {
             Button button = new Button("Stop !");
             Button button1 = new Button("Start");
             button1.setOnAction(e-> {
-                io.startAudioProcessing(InputMixer,OutputMixer,44000,1024);
-                running=true;
+                io = AudioIO.startAudioProcessing(InputMixer,OutputMixer,44000,1024);
+                running = true;
             });
             button.setOnAction(event -> active());
             ComboBox<String> cb = new ComboBox<>();
@@ -74,11 +75,12 @@ public class Main extends Application {
         }
         private void UpdateView(){
             if (running) {
-                signalView.updateData(io.getData());
-                vuMeter.update(io.getdB());
+                signalView.updateData(io.getInputSignal());
+                vuMeter.update(io.getInputSignal().getDBLevel());
             }
         }
         private void active(){
-            running = io.swap();
+            if (io!=null)   io.terminateAudioThread();
+            running=false;
         }
 }

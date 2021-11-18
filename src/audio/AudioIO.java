@@ -4,7 +4,6 @@ import javax.sound.sampled.*;
 import java.util.Arrays;
 
 public class AudioIO {
-    AudioProcessor audioProcessor;
 
     public static void printAudioMixers(){
         System.out.println("Mixers:");
@@ -67,25 +66,11 @@ public class AudioIO {
             }
         }
     }
-    public AudioSignal getData(){
-        return audioProcessor.getOutputSignal();
-    }
 
-    public double getdB(){
-        return audioProcessor.getOutputSignal().getDBLevel();
-    }
-
-    public boolean swap(){
-        if (audioProcessor.isThreadRunning()) audioProcessor.terminateAudioThread();
-        else audioProcessor.run();
-        return audioProcessor.isThreadRunning();
-        //Fixme : use resume instead of run but fix it before
-    }
-
-    public void startAudioProcessing(String inputMixer, String outputMixer, int sampleRate, int frameSize){
+    public static AudioProcessor startAudioProcessing(String inputMixer, String outputMixer, int sampleRate, int frameSize){
         TargetDataLine targetDataLine = obtainAudioInput(inputMixer,sampleRate);
         SourceDataLine sourceDataLine = obtainAudioOutput(outputMixer,sampleRate);
-        audioProcessor = new AudioProcessor(targetDataLine,sourceDataLine,frameSize);
+        AudioProcessor audioProcessor = new AudioProcessor(targetDataLine,sourceDataLine,frameSize);
         try {
             assert sourceDataLine != null;
             sourceDataLine.open();
@@ -94,13 +79,10 @@ public class AudioIO {
             targetDataLine.open();
             targetDataLine.start();
             new Thread(audioProcessor).start();
+            return audioProcessor;
         }catch (Exception e){
             e.printStackTrace();
+            return null;
         }
-    }
-
-    public static void  main(String[] args){
-        AudioIO io = new AudioIO();
-        io.startAudioProcessing("Réseau de microphones (Technolo","Périphérique audio principal",44000,1024);
     }
 }

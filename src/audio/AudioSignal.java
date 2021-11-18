@@ -46,6 +46,6 @@ public class AudioSignal {
     }
     private void updatedB(){
         dBlevel = 0;
-        for (double l : sampleBuffer) dBlevel =+ Math.abs(l/sampleBuffer.length);
+        for (double l : sampleBuffer) dBlevel =+ Math.log10(Math.abs(l/sampleBuffer.length));
     }
 }
