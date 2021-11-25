@@ -1,7 +1,8 @@
+package Old;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.*;
 import javafx.scene.*;
@@ -66,7 +67,7 @@ public class App extends Application {
     }
     private void Draw(){
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.drawImage(new Image("JavaLogo.png",width,height,true,true),50,0);
+        //gc.drawImage(new Image("picture.png",width,height,true,true),50,0);
         //Todo : change picture to allow override of the previous state
         gc.setFill(Color.BLACK);
         gc.fillText("Echo : " + microphone.isEcho(),400,700);

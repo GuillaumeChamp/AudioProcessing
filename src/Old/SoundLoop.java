@@ -1,3 +1,5 @@
+package Old;
+
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
 
@@ -46,9 +48,9 @@ public class SoundLoop implements Runnable {
         ByteArrayOutputStream outputData = new ByteArrayOutputStream(); //long list of unlimited data
         int sampleRate = 1024;
         byte[] rawData = new byte[microphone.getBufferSize()/5];
-
+        active=true;
         long uptime = 100000;
-        while (numBytes< uptime){
+        while (numBytes<uptime){
             int numberOfByteRead = microphone.read(rawData,0,sampleRate);
             numBytes += numberOfByteRead;
             //Todo : change the rawData by rawData*amp
