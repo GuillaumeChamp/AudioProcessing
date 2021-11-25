@@ -4,6 +4,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+/**
+ * Canvas permitting to show a dB level of the signal
+ */
 public class VuMeter extends Canvas {
     GraphicsContext gc = this.getGraphicsContext2D();
 
@@ -11,6 +14,10 @@ public class VuMeter extends Canvas {
         super(150,550);
     }
 
+    /**
+     * Update the dB level with color swap
+     * @param value new value
+     */
     public void update(double value){
         int OrangeLevel = -15;
         int RedLevel = -5;

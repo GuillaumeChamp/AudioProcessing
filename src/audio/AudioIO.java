@@ -7,17 +7,31 @@ import java.util.Arrays;
  * Class with only statics methods used for Input/Output process
  */
 public class AudioIO {
-
+    /**
+     * old methods used to check the name of all available mixer
+     */
     public static void printAudioMixers(){
         System.out.println("Mixers:");
         Arrays.stream(AudioSystem.getMixerInfo())
                 .forEach(e-> System.out.println("- name= \"" + e.getName()
                 + "\" description = \"" + e.getDescription() + "by" + e.getVendor() + "\"") );
     }
+
+    /**
+     * Recover the info of a mixer
+     * @param mixerName name of the mixer
+     * @return Info of the mixer
+     */
     public static Mixer.Info getMixerInfo(String mixerName){
         return Arrays.stream(AudioSystem.getMixerInfo())
         .filter(e -> e.getName().equalsIgnoreCase(mixerName)).findFirst().get();
     }
+    /**
+     * This methode return a target data line matching with the name
+     * @param mixerName name of the desired mixer
+     * @param sampleRate line sample rate
+     * @return the a target data line if found or a default one
+     */
     public static TargetDataLine obtainAudioInput(String mixerName, int sampleRate){
         AudioFormat format = new AudioFormat( sampleRate,16, 1,true, true);
         DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
@@ -44,6 +58,13 @@ public class AudioIO {
             }
         }
     }
+
+    /**
+     * This methode return a source data line matching with the name
+     * @param mixerName name of the desired mixer
+     * @param sampleRate line sample rate
+     * @return the a source data line if found or a default one
+     */
     public static SourceDataLine obtainAudioOutput(String mixerName, int sampleRate){
         AudioFormat format = new AudioFormat( sampleRate,16, 1,true, true);
         DataLine.Info speakerInfo = new DataLine.Info(SourceDataLine.class, format);
