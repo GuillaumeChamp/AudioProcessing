@@ -2,6 +2,7 @@ package ui;
 
 import audio.AudioIO;
 import audio.AudioProcessor;
+import audio.effect.Echo;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -22,6 +23,10 @@ public class Main extends Application {
     boolean running= false;
     String InputMixer,OutputMixer;
 
+    /**
+     * Starting the app and the scene with an animation timer
+     * @param primaryStage
+     */
         public void start(Stage primaryStage) {
         try {
             BorderPane root = new BorderPane();
@@ -44,7 +49,7 @@ public class Main extends Application {
             Button button = new Button("Stop !");
             Button button1 = new Button("Start");
             button1.setOnAction(e-> {
-                io = AudioIO.startAudioProcessing(InputMixer,OutputMixer,44000,1024);
+                io = AudioIO.startAudioProcessing(InputMixer,OutputMixer,10000,1024);
                 running = true;
             });
             button.setOnAction(event -> active());
@@ -63,23 +68,43 @@ public class Main extends Application {
 
         private Node createStatusbar(){
             HBox statusbar = new HBox();
-            statusbar.getChildren().addAll(new Label("Name:"), new TextField(" "));
+            ComboBox<String> cb = new ComboBox<>();
+            cb.getItems().addAll("None","Echo");
+            cb.setOnAction(e-> {
+                if (cb.getValue().equals("Echo")) AudioProcessor.effec = new Echo();
+            });
+            TextField tx = new TextField(" ");
+            tx.setOnAction(e-> AudioProcessor.effec.setValue(Integer.parseInt(tx.getText())));
+            statusbar.getChildren().addAll(new Label("Effect"),cb,new Label("Value"),tx);
             return statusbar;
         }
-        private Node createMainContent(){
+
+    /**
+     * Create the center part of the GUI
+     * @return the node holding all elements
+     */
+    private Node createMainContent(){
             Group g = new Group();
             g.getChildren().add(vuMeter);
-            signalView.setTranslateX(200);
+            vuMeter.setTranslateX(-100);
             g.getChildren().add(signalView);
             return g;
         }
-        private void UpdateView(){
+
+    /**
+     * Update all view if the thread is runnigng
+     */
+    private void UpdateView(){
             if (running) {
                 signalView.updateData(io.getInputSignal());
                 vuMeter.update(io.getInputSignal().getDBLevel());
             }
         }
-        private void active(){
+
+    /**
+     * Audio thread manager
+     */
+    private void active(){
             if (io!=null)   io.terminateAudioThread();
             running=false;
         }

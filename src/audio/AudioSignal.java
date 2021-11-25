@@ -15,6 +15,11 @@ public class AudioSignal {
         this.sampleBuffer = other.sampleBuffer;
         this.dBlevel= other.dBlevel;
     }
+
+    public void setSampleBuffer(double[] sampleBuffer) {
+        this.sampleBuffer = sampleBuffer;
+    }
+
     public double getDBLevel(){
         return dBlevel;
     }

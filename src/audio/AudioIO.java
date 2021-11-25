@@ -3,13 +3,16 @@ package audio;
 import javax.sound.sampled.*;
 import java.util.Arrays;
 
+/**
+ * Class with only statics methods used for Input/Output process
+ */
 public class AudioIO {
 
     public static void printAudioMixers(){
         System.out.println("Mixers:");
         Arrays.stream(AudioSystem.getMixerInfo())
                 .forEach(e-> System.out.println("- name= \"" + e.getName()
-                + "\" description = \"" + e.getDescription() + "by" + e.getVendor() + "\""));
+                + "\" description = \"" + e.getDescription() + "by" + e.getVendor() + "\"") );
     }
     public static Mixer.Info getMixerInfo(String mixerName){
         return Arrays.stream(AudioSystem.getMixerInfo())
@@ -67,6 +70,14 @@ public class AudioIO {
         }
     }
 
+    /**
+     * Start a new Audio thread
+     * @param inputMixer name of the In material
+     * @param outputMixer name of the Out material
+     * @param sampleRate must be under 20 kHz
+     * @param frameSize Size of the buffer (a big one allow to do cool effect but make time to be printed)
+     * @return
+     */
     public static AudioProcessor startAudioProcessing(String inputMixer, String outputMixer, int sampleRate, int frameSize){
         TargetDataLine targetDataLine = obtainAudioInput(inputMixer,sampleRate);
         SourceDataLine sourceDataLine = obtainAudioOutput(outputMixer,sampleRate);

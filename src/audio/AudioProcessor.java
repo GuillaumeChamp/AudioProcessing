@@ -1,13 +1,19 @@
 package audio;
+import audio.effect.Effec;
+
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
+/**
+ * A class holding all the processing part and the thread
+ */
 public class AudioProcessor implements Runnable {
     private final AudioSignal inputSignal, outputSignal;
     private final TargetDataLine audioInput;
     private final SourceDataLine audioOutput;
-    public boolean isThreadRunning;
+    private boolean isThreadRunning;
+    public static Effec effec=null;
 
     public AudioProcessor(TargetDataLine audioInput, SourceDataLine audioOutput, int frameSize) {
         this.audioInput = audioInput;
@@ -31,6 +37,7 @@ public class AudioProcessor implements Runnable {
         while (isThreadRunning){
             inputSignal.recordFrom(audioInput);
             outputSignal.setFrom(inputSignal);
+            if (effec!=null) effec.apply(outputSignal);
             outputSignal.playTo(audioOutput);
         }
     }
