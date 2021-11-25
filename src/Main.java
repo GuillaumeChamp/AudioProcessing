@@ -1,5 +1,3 @@
-package ui;
-
 import audio.AudioIO;
 import audio.AudioProcessor;
 import audio.effect.Echo;
@@ -13,6 +11,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import ui.SignalView;
+import ui.VuMeter;
+
 import javax.sound.sampled.AudioSystem;
 import java.util.Arrays;
 
