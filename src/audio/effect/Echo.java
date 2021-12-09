@@ -5,7 +5,7 @@ import audio.AudioSignal;
 /**
  * Only a sample of the possibilities
  */
-public class Echo implements Effec{
+public class Echo implements Effect {
     int delay = 200;
 
     /**

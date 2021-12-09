@@ -5,7 +5,7 @@ import audio.AudioSignal;
 /**
  * Interface all effect must implement
  */
-public interface Effec {
+public interface Effect {
      void setValue(int v);
      void apply(AudioSignal as);
 }

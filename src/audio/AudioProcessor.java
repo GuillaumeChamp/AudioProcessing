@@ -1,5 +1,5 @@
 package audio;
-import audio.effect.Effec;
+import audio.effect.Effect;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
@@ -13,7 +13,7 @@ public class AudioProcessor implements Runnable {
     private final TargetDataLine audioInput;
     private final SourceDataLine audioOutput;
     private boolean isThreadRunning;
-    public static Effec effec=null;
+    public static Effect effect =null;
 
     /**
      * Create a new audio processor
@@ -44,10 +44,10 @@ public class AudioProcessor implements Runnable {
             System.out.println("unable to open or start");
         }
         while (isThreadRunning){
-            inputSignal.recordFrom(audioInput);
+            if (!inputSignal.recordFrom(audioInput)) terminateAudioThread();
             outputSignal.setFrom(inputSignal);
-            if (effec!=null) effec.apply(outputSignal);
-            outputSignal.playTo(audioOutput);
+            if (effect !=null) effect.apply(outputSignal);
+            if (outputSignal.playTo(audioOutput)) terminateAudioThread();
         }
     }
 
@@ -64,7 +64,7 @@ public class AudioProcessor implements Runnable {
 
     /**
      * getter function useful to print data
-     * @return
+     * @return the data
      */
     public AudioSignal getInputSignal() {
         return inputSignal;
@@ -73,11 +73,11 @@ public class AudioProcessor implements Runnable {
     /**
      * Test of the class /dead code/
      * only keep for the mark
-     * @param args
+     * @param args main args
      */
     public static void main(String[] args){
-        TargetDataLine inLine = AudioIO.obtainAudioInput("Réseau de microphones (Technolo",44000);
-        SourceDataLine outLine = AudioIO.obtainAudioOutput("Périphérique audio principal",44000);
+        TargetDataLine inLine = AudioIO.obtainAudioInput("One of my mixer",44000);
+        SourceDataLine outLine = AudioIO.obtainAudioOutput("One of my mixer",44000);
         AudioProcessor as = new AudioProcessor(inLine,outLine,1024);
         try {
             assert inLine != null;

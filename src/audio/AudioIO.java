@@ -7,6 +7,7 @@ import java.util.Arrays;
  * Class with only statics methods used for Input/Output process
  */
 public class AudioIO {
+
     /**
      * old methods used to check the name of all available mixer
      */
@@ -23,9 +24,13 @@ public class AudioIO {
      * @return Info of the mixer
      */
     public static Mixer.Info getMixerInfo(String mixerName){
+        if (Arrays.stream(AudioSystem.getMixerInfo())
+                .anyMatch(e -> e.getName().equalsIgnoreCase(mixerName))){
         return Arrays.stream(AudioSystem.getMixerInfo())
-        .filter(e -> e.getName().equalsIgnoreCase(mixerName)).findFirst().get();
+        .filter(e -> e.getName().equalsIgnoreCase(mixerName)).findFirst().get();}
+        return null;
     }
+
     /**
      * This methode return a target data line matching with the name
      * @param mixerName name of the desired mixer
@@ -97,7 +102,7 @@ public class AudioIO {
      * @param outputMixer name of the Out material
      * @param sampleRate must be under 20 kHz
      * @param frameSize Size of the buffer (a big one allow to do cool effect but make time to be printed)
-     * @return
+     * @return the audio processor it not failed
      */
     public static AudioProcessor startAudioProcessing(String inputMixer, String outputMixer, int sampleRate, int frameSize){
         TargetDataLine targetDataLine = obtainAudioInput(inputMixer,sampleRate);
@@ -116,5 +121,13 @@ public class AudioIO {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Print all mixer available
+     * @param args main arg
+     */
+    public static void main(String[] args) {
+        printAudioMixers();
     }
 }

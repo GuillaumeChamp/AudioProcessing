@@ -8,7 +8,7 @@ import javax.sound.sampled.TargetDataLine;
  */
 public class AudioSignal {
     private double[] sampleBuffer;
-    private double dBlevel;
+    private double dBLevel;
 
     /**
      * Main constructor
@@ -24,7 +24,7 @@ public class AudioSignal {
      */
     public void setFrom(AudioSignal other){
         this.sampleBuffer = other.sampleBuffer;
-        this.dBlevel= other.dBlevel;
+        this.dBLevel = other.dBLevel;
     }
 
     /**
@@ -37,14 +37,14 @@ public class AudioSignal {
 
     /**
      * Getter function used for the vuMeter
-     * @return
+     * @return dBLevel to show
      */
     public double getDBLevel(){
-        return dBlevel;
+        return dBLevel;
     }
     /**
      * Getter function used for the effects
-     * @return
+     * @return sampleBuffer which will be modified
      */
     public double[] getSampleBuffer() {
         return sampleBuffer;
@@ -89,10 +89,10 @@ public class AudioSignal {
     }
 
     /**
-     * Sub function of recordFrom. Update the dBlevel
+     * Sub function of recordFrom. Update the dBLevel
      */
     private void updatedB(){
-        dBlevel = 0;
-        for (double l : sampleBuffer) dBlevel =+ Math.log10(Math.abs(l/sampleBuffer.length));
+        dBLevel = 0;
+        for (double l : sampleBuffer) dBLevel =+ Math.log10(Math.abs(l/sampleBuffer.length));
     }
 }
