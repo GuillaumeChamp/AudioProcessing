@@ -18,7 +18,7 @@ import javax.sound.sampled.AudioSystem;
 import java.util.Arrays;
 
 public class Main extends Application {
-    SignalView signalView = new SignalView(new NumberAxis(),new NumberAxis());
+    SignalView signalView = new SignalView(new NumberAxis(),new NumberAxis(-0.1,0.1,0.0001));
     VuMeter vuMeter = new VuMeter();
     AudioProcessor io;
     boolean running= false;
@@ -50,7 +50,7 @@ public class Main extends Application {
             Button button = new Button("Stop !");
             Button button1 = new Button("Start");
             button1.setOnAction(e-> {
-                io = AudioIO.startAudioProcessing(InputMixer,OutputMixer,10000,1024);
+                io = AudioIO.startAudioProcessing(InputMixer,OutputMixer,22000,2048);
                 running = true;
             });
             button.setOnAction(event -> active());

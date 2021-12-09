@@ -2,14 +2,25 @@ package audio.effect;
 
 import audio.AudioSignal;
 
+/**
+ * Only a sample of the possibilities
+ */
 public class Echo implements Effec{
     int delay = 200;
 
+    /**
+     * The value for this effect is the delay (in sample) between the ripple
+     * @param v value of the new ripple time
+     */
     @Override
     public void setValue(int v) {
         delay=v;
     }
 
+    /**
+     * Apply the effect to the audioSignal which can be either the out or the in depending of if you want it to be printed
+     * @param as the in or out signal
+     */
     @Override
     public void apply(AudioSignal as) {
         double[] NewBuffer = new double[as.getSampleBuffer().length];
