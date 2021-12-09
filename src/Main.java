@@ -26,13 +26,13 @@ public class Main extends Application {
 
     /**
      * Starting the app and the scene with an animation timer
-     * @param primaryStage
+     * @param primaryStage the stage
      */
         public void start(Stage primaryStage) {
         try {
             BorderPane root = new BorderPane();
             root.setTop(createToolbar());
-            root.setBottom(createStatusbar());
+            root.setBottom(createStatus());
             root.setCenter(createMainContent());
             Scene scene = new Scene(root,1500,800);
             primaryStage.setScene(scene);
@@ -67,8 +67,8 @@ public class Main extends Application {
             return new ToolBar(button1,button, new Separator(), new Label("Input Mixer"),cb,new Label("outputMixer"), cb1);
         }
 
-        private Node createStatusbar(){
-            HBox statusbar = new HBox();
+        private Node createStatus(){
+            HBox status = new HBox();
             ComboBox<String> cb = new ComboBox<>();
             cb.getItems().addAll("None","Echo");
             cb.setOnAction(e-> {
@@ -76,8 +76,8 @@ public class Main extends Application {
             });
             TextField tx = new TextField(" ");
             tx.setOnAction(e-> AudioProcessor.effec.setValue(Integer.parseInt(tx.getText())));
-            statusbar.getChildren().addAll(new Label("Effect"),cb,new Label("Value"),tx);
-            return statusbar;
+            status.getChildren().addAll(new Label("Effect"),cb,new Label("Value"),tx);
+            return status;
         }
 
     /**
@@ -93,7 +93,7 @@ public class Main extends Application {
         }
 
     /**
-     * Update all view if the thread is runnigng
+     * Update all view if the thread is running
      */
     private void UpdateView(){
             if (running) {
